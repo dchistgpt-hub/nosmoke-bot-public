@@ -2,32 +2,40 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    concurrency:
+      group: deploy-main
+      cancel-in-progress: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup SSH key
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.VPS_KEY }}
-
-      - name: Upload project to VPS
+      - name: Prepare SSH
         run: |
-          rsync -az --delete -e "ssh -o StrictHostKeyChecking=no" ./ \
-            --exclude='.env' \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/root/nosmoke-bot
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_KEY }}" > ~/.ssh/id_vps
+          chmod 600 ~/.ssh/id_vps
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
 
-      - name: Rebuild & restart containers
+      - name: Rsync to VPS
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} <<'SSH'
-            cd /root/nosmoke-bot
-            docker compose up -d --build    # пересобрать и поднять
-          SSH
+          rsync -az --delete \
+            --exclude '.git' \
+            --exclude 'node_modules/' \
+            --exclude 'logs/' \
+            --exclude 'caddy/data/' \
+            --exclude 'caddy/config/' \
+            --exclude '.env' \
+            -e "ssh -i ~/.ssh/id_vps -o StrictHostKeyChecking=yes" \
+            ./ "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/"
 
+      - name: Compose up
+        run: |
+          ssh -i ~/.ssh/id_vps -o StrictHostKeyChecking=yes \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            "cd '${{ secrets.VPS_PATH }}' && docker compose up -d --build"
