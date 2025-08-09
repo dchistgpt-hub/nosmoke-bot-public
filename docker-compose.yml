@@ -6,6 +6,8 @@ services:
     env_file: .env
     volumes:
       - ./logs:/app/logs
+    depends_on:
+      - mongo
 
   caddy:
     image: caddy:2
@@ -19,3 +21,10 @@ services:
       - ./caddy/config:/config
     depends_on:
       - bot
+
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - ./data/mongo:/data/db
+    command: ["--wiredTigerCacheSizeGB","0.25"]
