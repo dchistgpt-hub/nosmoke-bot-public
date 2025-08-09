@@ -1,0 +1,1 @@
+version: "3.9"\nservices:\n  bot:\n    build: ./bot\n    env_file: .env\n    restart: unless-stopped\n

@@ -1,0 +1,8 @@
+bot.chatnzt.ru {
+  encode gzip
+  log {
+    output stdout
+    format console
+  }
+  reverse_proxy bot:3000
+}
