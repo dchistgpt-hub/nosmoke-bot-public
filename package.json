@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "@tensorflow-models/toxicity": "^1.2.2",
+    "@tensorflow/tfjs": "^4.22.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "markdown-it": "^14.1.0",
+    "mongoose": "^8.17.1",
+    "node-cron": "^4.2.1",
+    "openai": "^5.12.2",
+    "telegraf": "^4.16.3",
     "yookassa": "^0.1.1"
   }
 }
