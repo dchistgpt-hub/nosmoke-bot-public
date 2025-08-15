@@ -1,4 +1,3 @@
 services:
   caddy:
-    volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    env_file: .env

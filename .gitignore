@@ -4,3 +4,13 @@ logs/
 *.bak*
 *.log
 node_modules/
+.env
+logs/
+data/
+caddy/data/
+*.bak*
+.env
+logs/
+data/
+caddy/data/
+*.bak*

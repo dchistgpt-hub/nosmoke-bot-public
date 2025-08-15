@@ -17,7 +17,7 @@ bot.chatnzt.ru {
     reverse_proxy http://yk:3102 {
       header_up -Signature
       # подставляем базовую авторизацию к апстриму yk (yk_user/super-secret)
-      header_up Authorization "Basic eWtfdXNlcjpzdXBlci1zZWNyZXQ="
+      header_up Authorization "Basic {env.YK_BASIC_B64}"
     }
   }
 
