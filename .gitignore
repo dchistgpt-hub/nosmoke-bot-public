@@ -14,3 +14,11 @@ logs/
 data/
 caddy/data/
 *.bak*
+
+# ignores
+.env
+logs/
+data/
+caddy/data/
+bot/node_modules/
+*.bak*
