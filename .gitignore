@@ -5,3 +5,9 @@ caddy/config/
 node_modules/
 npm-debug.log*
 .DS_Store
+.env
+.env.*
+data/
+logs/
+*.bak*
+node_modules/
