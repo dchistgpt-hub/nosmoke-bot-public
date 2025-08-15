@@ -5,26 +5,19 @@
 bot.chatnzt.ru {
   encode zstd gzip
 
-  # Telegram → bot:3000
+  # Telegram webhook -> bot:3000
   @tg path_regexp tg ^/bot[0-9A-Za-z:_-]+$
   handle @tg {
     reverse_proxy http://bot:3000
   }
 
-  # YooKassa webhooks: пускаем ТОЛЬКО с их подсетей
-  @yk_ok {
-    path /yk-webhook*
-    remote_ip 77.75.153.0/24 77.75.154.0/24
-  }
-  handle @yk_ok {
+  # YooKassa webhooks -> yk:3102
+  @yk path /yk-webhook*
+  handle @yk {
     reverse_proxy http://yk:3102 {
       header_up -Signature
+      # <-- подставим базовую авторизацию на апстрим yk
       header_up Authorization "Basic eWtfdXNlcjpzdXBlci1zZWNyZXQ="
     }
-  }
-
-  # Всем остальным на /yk-webhook* → 403
-  handle /yk-webhook* {
-    respond 403
   }
 }

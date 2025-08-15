@@ -1,0 +1,14 @@
+services:
+  bot:
+    environment:
+      FF_PAYMENTS: "1"
+      PAY_PROVIDER: "yookassa"
+      # Маршрутизация клиента YK: сначала локальный ретранслятор на хосте
+      YK_SNI_HOST: "api.yookassa.ru"
+      YK_API_HOSTS: "172.17.0.1:8443,185.71.78.133,109.235.165.99,api.yookassa.ru"
+    networks:
+      - default
+      - bridge
+networks:
+  bridge:
+    external: true

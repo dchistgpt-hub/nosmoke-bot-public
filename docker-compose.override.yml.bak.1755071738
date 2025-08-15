@@ -1,0 +1,14 @@
+services:
+  bot:
+    environment:
+      FF_PAYMENTS: "1"
+      PAY_PROVIDER: "yookassa"
+      # направляем клиента YooKassa в локальный ретранслятор на хосте
+      YK_SNI_HOST: "api.yookassa.ru"
+      YK_API_HOSTS: "<GW_IP>:172.17.0.1,api.yookassa.ru"
+    networks:
+      - default
+      - bridge
+networks:
+  bridge:
+    external: true

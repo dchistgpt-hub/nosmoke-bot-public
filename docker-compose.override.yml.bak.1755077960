@@ -1,0 +1,18 @@
+services:
+  bot:
+    environment:
+      PORT: "3102"
+      FF_PAYMENTS: "1"
+      PAY_PROVIDER: "yookassa"
+
+      # egress в YooKassa: сначала ретранслятор, затем IP/dns
+      YK_SNI_HOST: "api.yookassa.ru"
+      YK_API_HOSTS: "172.17.0.1:8443,185.71.78.133,109.235.165.99,api.yookassa.ru"
+
+      # СЕКРЕТЫ ПОДПИСИ ВЕБХУКА — оба равны секрету из кабинета YK:
+      YK_API_KEY: "test_9UcGxQ9EIVUfj-eHT0sn8EGA2eCxyEqOUgb703zC_z0"
+      YK_WEBHOOK_SECRET: "CxyEqOUgb703zC_z0"
+
+      # Basic на вебхуке отключаем (YooKassa его не шлёт)
+      YK_WEBHOOK_LOGIN:
+      YK_WEBHOOK_PASSWORD:

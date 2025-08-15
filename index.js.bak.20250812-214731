@@ -267,10 +267,3 @@ server.listen(PORT, async () => {
     console.error('Failed to set webhook:', e);
   }
 });
-
-// ---- load subscription feature (safe) ----
-try {
-  console.log('Feature "sub" enabled');
-} catch (e) {
-  console.error('sub load error:', (e && e.message) || e);
-}

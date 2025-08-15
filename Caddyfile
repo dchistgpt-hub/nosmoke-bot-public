@@ -1,8 +1,26 @@
+{
+  auto_https disable_redirects
+}
+
 bot.chatnzt.ru {
-  encode gzip
-  log {
-    output stdout
-    format console
+  encode zstd gzip
+
+  # Telegram webhook -> bot:3000
+  @tg path_regexp tg ^/bot[0-9A-Za-z:_-]+$
+  handle @tg {
+    reverse_proxy http://bot:3000
   }
-  reverse_proxy bot:3000
+
+  # YooKassa webhooks -> yk:3102
+  @yk path /yk-webhook*
+  handle @yk {
+    reverse_proxy http://yk:3102 {
+      header_up -Signature
+      # подставляем базовую авторизацию к апстриму yk (yk_user/super-secret)
+      header_up Authorization "Basic eWtfdXNlcjpzdXBlci1zZWNyZXQ="
+    }
+  }
+
+  # остальное -> бот
+  reverse_proxy http://bot:3000
 }

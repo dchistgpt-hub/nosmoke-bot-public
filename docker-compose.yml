@@ -28,3 +28,24 @@ services:
     volumes:
       - ./data/mongo:/data/db
     command: ["--wiredTigerCacheSizeGB","0.25"]
+  yk:
+    image: nosmoke-bot-bot
+    command: ["node", "/app/yk-webhook-server.js"]
+    environment:
+      - YK_WEBHOOK_LOGIN=yk_user
+      - YK_WEBHOOK_PASSWORD=super-secret
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  payments:
+    image: nosmoke-bot-bot
+    command: ["node", "/app/payments-notifier.js"]
+    env_file: .env
+    environment:
+      - QUIET_OVERRIDE_PAYMENTS=0
+      - ALERT_PAYMENTS=1
+      - ADMIN_TG_ID=363098548
+    depends_on:
+      - mongo
+    restart: unless-stopped

@@ -1,0 +1,30 @@
+services:
+  yk:
+    image: nosmoke-bot-bot
+    entrypoint: ["node"]
+    command: ["/app/yk-webhook-server.js"]
+    restart: unless-stopped
+    environment:
+      - YK_WEBHOOK_LOGIN=yk_user
+      - YK_WEBHOOK_PASSWORD=super-secret
+      - MONGODB_URI=mongodb://mongo:27017/app
+    volumes:
+      - ./yk-webhook-server.js:/app/yk-webhook-server.js:ro
+    depends_on:
+      - mongo
+services:
+  payments:
+    image: nosmoke-bot-bot
+    entrypoint: ["node"]
+    command: ["/app/payments-notifier.js"]
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - QUIET_OVERRIDE_PAYMENTS=0
+      - ALERT_PAYMENTS=1
+      - ADMIN_TG_ID=363098548
+    volumes:
+      - ./payments-notifier.js:/app/payments-notifier.js:ro
+    depends_on:
+      - mongo

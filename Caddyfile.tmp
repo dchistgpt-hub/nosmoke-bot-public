@@ -1,0 +1,25 @@
+{
+  auto_https disable_redirects
+}
+
+bot.chatnzt.ru {
+  encode zstd gzip
+
+  @tg path_regexp tg ^/bot[0-9A-Za-z:_-]+$
+  handle @tg {
+    reverse_proxy http://bot:3000
+  }
+
+  handle /yk-webhook* {
+    reverse_proxy http://bot:3000
+  }
+
+  handle {
+    respond "ok" 200
+  }
+
+  log {
+    output stdout
+    format console
+  }
+}

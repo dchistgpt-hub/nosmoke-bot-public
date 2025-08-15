@@ -76,7 +76,7 @@ async function tick() {
         "Спасибо! Оплата принята ✅",
         `ID: <code>${id}</code>`,
         `Сумма: <b>${sum}</b> RUB`,
-        desc !== "-" ? `Описание: ${String(desc).replace(/^NoSmokeBot\b/, "AI Chatnzt")}` : ""
+        desc !== "-" ? `Описание: ${desc}` : ""
       ].filter(Boolean).join("\n");
       const r = await sendMessage(tg, text);
       console.log("payments-notifier: buyer notify", id, tg, r.status);
@@ -93,7 +93,7 @@ async function tick() {
         `ID: <code>${id}</code>`,
         `Сумма: <b>${sum}</b> RUB`,
         `TG: <code>${tg || "-"}</code>`,
-        desc ? `Описание: ${String(desc).replace(/^NoSmokeBot\b/, "AI Chatnzt")}` : ""
+        desc ? `Описание: ${desc}` : ""
       ].filter(Boolean).join("\n");
       const rA = await sendMessage(ADMIN_ID, textA);
       console.log("payments-notifier: admin notify", id, rA.status);

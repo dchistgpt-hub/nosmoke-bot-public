@@ -1,0 +1,10 @@
+services:
+  bot:
+    environment:
+      FF_PAYMENTS: "1"
+      PAY_PROVIDER: "yookassa"
+services:
+  bot:
+    environment:
+      YK_SNI_HOST: "api.yookassa.ru"
+      YK_API_HOSTS: "185.71.78.133,109.235.165.99,api.yookassa.ru"
