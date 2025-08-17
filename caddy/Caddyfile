@@ -5,19 +5,46 @@
 bot.chatnzt.ru {
   encode zstd gzip
 
+  # включим лог, чтобы видеть ошибки прокси
+  log {
+    output stdout
+    format console
+  }
+
   # Telegram webhook -> bot:3000
   @tg path_regexp tg ^/bot[0-9A-Za-z:_-]+$
   handle @tg {
     reverse_proxy http://bot:3000
   }
 
-  # YooKassa webhooks -> yk:3102
+  # YooKassa webhooks -> yk:3102 (как было)
   @yk path /yk-webhook*
   handle @yk {
     reverse_proxy http://yk:3102 {
       header_up -Signature
-      # <-- подставим базовую авторизацию на апстрим yk
       header_up Authorization "Basic {env.YK_BASIC_B64}"
+    }
+  }
+
+  # === НОВОЕ: endpoint для создания платежа ===
+  # Бот стучится HTTPS на https://bot.chatnzt.ru/yk-create
+  # Caddy проксирует в https://api.yookassa.ru/v3/payments
+  @yk_create method POST path /yk-create
+  handle @yk_create {
+    rewrite * /v3/payments
+    reverse_proxy https://api.yookassa.ru {
+      # критично: правильный Host к апстриму
+      header_up Host api.yookassa.ru
+      # пробрасываем нужные заголовки от бота
+      header_up Authorization {http.request.header.Authorization}
+      header_up Idempotence-Key {http.request.header.Idempotence-Key}
+      header_up Content-Type application/json
+
+      # транспорт со SNI и без HTTP/2 (иногда h2 капризничает у провайдеров)
+      transport http {
+        versions h1
+        tls_server_name api.yookassa.ru
+      }
     }
   }
 }
