@@ -32,7 +32,7 @@ function buildWelcomeText(env) {
 function payUrl(env) {
   const domain = env.DOMAIN || 'https://bot.chatnzt.ru';
   // на эту страницу у тебя уже настроен платёжный UI
-  return domain.replace(/\/+$/,'') + '/pay';
+  return null; // unused
 }
 
 module.exports.register = function register(bot) {
